@@ -1,0 +1,52 @@
+import pandas as pd
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
+
+data = pd.DataFrame([
+    {'StudyHours': 1, 'Understanding': 1, 'PassExam': 1},
+    {'StudyHours': 1, 'Understanding': 1, 'PassExam': 1},
+    {'StudyHours': 1, 'Understanding': 0, 'PassExam': 0},
+    {'StudyHours': 0, 'Understanding': 1, 'PassExam': 0},
+    {'StudyHours': 0, 'Understanding': 0, 'PassExam': 0},
+    {'StudyHours': 0, 'Understanding': 0, 'PassExam': 0},
+])
+
+model = DiscreteBayesianNetwork([
+    ('StudyHours', 'Understanding'),
+    ('Understanding', 'PassExam')
+])
+
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+
+inference = VariableElimination(model)
+
+result = inference.query(variables=['PassExam'], evidence={'StudyHours': 1})
+
+print(result)//
+import pandas as pd
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
+
+data = pd.DataFrame([
+    {'Smoking': 1, 'LungDamage': 1, 'Disease': 1},
+    {'Smoking': 1, 'LungDamage': 1, 'Disease': 1},
+    {'Smoking': 1, 'LungDamage': 0, 'Disease': 0},
+    {'Smoking': 0, 'LungDamage': 1, 'Disease': 0},
+    {'Smoking': 0, 'LungDamage': 0, 'Disease': 0},
+    {'Smoking': 0, 'LungDamage': 0, 'Disease': 0},
+])
+
+model = DiscreteBayesianNetwork([
+    ('Smoking', 'LungDamage'),
+    ('LungDamage', 'Disease')
+])
+
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+
+inference = VariableElimination(model)
+
+result = inference.query(variables=['Disease'], evidence={'Smoking': 1})
+
+print(result)
